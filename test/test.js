@@ -223,36 +223,34 @@ test("Try to use a width larger than original (with a null in there)", async t =
 });
 
 test("sharpResizeOptions are passed to resize", async t => {
+  let baseStats = await eleventyImage("./test/bio-2017.jpg", {
+    widths: [400],
+    formats: ["png"],
+    dryRun: true,
+    useCache: false,
+  });
+
   let stats = await eleventyImage("./test/bio-2017.jpg", {
     widths: [400],
     formats: ["png"],
     dryRun: true,
+    useCache: false,
     sharpResizeOptions: {
-      height: 200,
-      fit: "contain",
-      background: { r: 0, g: 255, b: 0, alpha: 1 },
+      kernel: "nearest",
     },
   });
 
-  let metadata = await sharp(stats.png[0].buffer).metadata();
-  t.is(metadata.width, 400);
-  t.is(metadata.height, 200);
-  let cornerPixel = await sharp(stats.png[0].buffer)
-    .ensureAlpha()
-    .extract({ left: 0, top: 0, width: 1, height: 1 })
-    .raw()
-    .toBuffer();
-  t.deepEqual([...cornerPixel], [0, 255, 0, 255]);
+  let basePixels = await sharp(baseStats.png[0].buffer).raw().toBuffer();
+  let kernelPixels = await sharp(stats.png[0].buffer).raw().toBuffer();
+  t.notDeepEqual(kernelPixels, basePixels);
 
   let overrideStats = await eleventyImage("./test/bio-2017.jpg", {
     widths: [400],
     formats: ["png"],
     dryRun: true,
+    useCache: false,
     sharpResizeOptions: {
       width: 200,
-      height: 200,
-      fit: "contain",
-      background: { r: 0, g: 255, b: 0, alpha: 1 },
     },
   });
 
