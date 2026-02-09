@@ -222,6 +222,44 @@ test("Try to use a width larger than original (with a null in there)", async t =
   t.is(stats.jpeg[0].width, 1280);
 });
 
+test("sharpResizeOptions are passed to resize", async t => {
+  let stats = await eleventyImage("./test/bio-2017.jpg", {
+    widths: [400],
+    formats: ["png"],
+    dryRun: true,
+    sharpResizeOptions: {
+      height: 200,
+      fit: "contain",
+      background: { r: 0, g: 255, b: 0, alpha: 1 },
+    },
+  });
+
+  let metadata = await sharp(stats.png[0].buffer).metadata();
+  t.is(metadata.width, 400);
+  t.is(metadata.height, 200);
+  let cornerPixel = await sharp(stats.png[0].buffer)
+    .ensureAlpha()
+    .extract({ left: 0, top: 0, width: 1, height: 1 })
+    .raw()
+    .toBuffer();
+  t.deepEqual([...cornerPixel], [0, 255, 0, 255]);
+
+  let overrideStats = await eleventyImage("./test/bio-2017.jpg", {
+    widths: [400],
+    formats: ["png"],
+    dryRun: true,
+    sharpResizeOptions: {
+      width: 200,
+      height: 200,
+      fit: "contain",
+      background: { r: 0, g: 255, b: 0, alpha: 1 },
+    },
+  });
+
+  let overrideMetadata = await sharp(overrideStats.png[0].buffer).metadata();
+  t.is(overrideMetadata.width, 400);
+});
+
 test("Minimum width threshold (valid)", async t => {
   // original is 1280
   let stats = await eleventyImage("./test/bio-2017.jpg", {

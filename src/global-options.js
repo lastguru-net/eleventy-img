@@ -24,6 +24,7 @@ export const DEFAULTS = {
   svgCompressionSize: "", // "br" to report SVG `size` property in metadata as Brotli compressed
   // overrideInputFormat: false, // internal, used to force svg output in statsSync et al
   sharpOptions: {}, // options passed to the Sharp constructor
+  sharpResizeOptions: {}, // options passed to the Sharp resize method
   sharpWebpOptions: {}, // options passed to the Sharp webp output method
   sharpPngOptions: {}, // options passed to the Sharp png output method
   sharpJpegOptions: {}, // options passed to the Sharp jpeg output method

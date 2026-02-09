@@ -412,6 +412,7 @@ export default class Image {
     // e.g. `widths: [300]` and `widths: [300, 600]`, with all else being equal the 300px output of each should have the same hash
     let keysToKeep = [
       "sharpOptions",
+      "sharpResizeOptions",
       "sharpWebpOptions",
       "sharpPngOptions",
       "sharpJpegOptions",
@@ -710,9 +711,9 @@ export default class Image {
 
         if(!isTransformResize) {
           if(stat.width < sharpMetadata.width || (this.options.svgAllowUpscale && sharpMetadata.format === "svg")) {
-            let resizeOptions = {
+            let resizeOptions = Object.assign({}, this.options.sharpResizeOptions, {
               width: stat.width
-            };
+            });
 
             if(sharpMetadata.format !== "svg" || !this.options.svgAllowUpscale) {
               resizeOptions.withoutEnlargement = true;
@@ -925,4 +926,3 @@ export default class Image {
     return img.statsByDimensionsSync(width, height);
   }
 }
-

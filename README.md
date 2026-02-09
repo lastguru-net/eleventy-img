@@ -24,6 +24,12 @@ npm install --save-dev @11ty/eleventy-img
 
 _[The full `eleventy-img` documentation is on 11ty.dev](https://www.11ty.dev/docs/plugins/image/)._
 
+## Sharp Options
+
+- `sharpOptions`: passed to the Sharp constructor.
+- `sharpResizeOptions`: passed to `sharp.resize` and merged with the generated width (the `width` set by eleventy-img always wins), letting you set options like `height`, `fit`, or `position`.
+- Format-specific output options: `sharpWebpOptions`, `sharpPngOptions`, `sharpJpegOptions`, `sharpAvifOptions`.
+
 ## Tests
 
 ```
